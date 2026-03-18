@@ -100,40 +100,12 @@ Website pemesanan gedung yang menampilkan ketersediaan harian secara transparan,
   /admin/bookings/export/pdf?start=YYYY-MM-DD&end=YYYY-MM-DD
   ```
 
-## Testing
-```bash
-php artisan test --filter=BookingOverlapTest
-```
-
 ## Keamanan & Validasi
 - Autentikasi terintegrasi (Breeze)
 - Middleware `role:admin` untuk rute admin
 - Validasi tanggal mulai/selesai dan cek bentrok (overlap)
 - Upload file hanya tipe `jpg, jpeg, png, pdf` dan ukuran terbatas
 
-## Roadmap (Opsional)
-- Notifikasi email saat disetujui/ditolak
-- Kalender jam (sekarang berbasis harian)
-- Panel pengelolaan venue dan tarif dinamis
-
-## Cara Menjelaskan ke Klien
-- Inti Nilai:
-  - Transparansi ketersediaan gedung secara langsung
-  - Proses pemesanan sederhana dan cepat
-  - Panel admin untuk kontrol penuh (setujui/tolak, bukti, laporan)
-  - Laporan operasional siap unduh (CSV/PDF)
-- Demo Singkat (±2 menit):
-  1. Tunjukkan halaman Home: hero, tombol “Pesan Sekarang”, kalender berwarna
-  2. Klik tanggal kosong → “Buat Pemesanan”, isi form singkat
-  3. Login sebagai admin → lihat daftar Menunggu, Setujui satu pesanan
-  4. Kembali ke kalender → tanggal berubah status “Disetujui”
-  5. Buka export PDF/CSV untuk periode acara
-- Bahasa yang Digunakan:
-  - Semua label status: Menunggu/Disetujui/Ditolak
-  - Navigasi dan tombol disederhanakan agar mudah dipahami tamu
-- Penyesuaian:
-  - Logo, warna hijau utama, alamat & peta sudah disesuaikan dengan lokasi gedung
-  - Section fitur singkat dan rapi untuk materi promosi
 
 ## Lisensi
 MIT
