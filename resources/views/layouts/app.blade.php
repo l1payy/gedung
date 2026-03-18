@@ -15,7 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen flex flex-col bg-gray-100">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -28,9 +28,19 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main class="flex-1">
                 {{ $slot }}
             </main>
+            <footer class="bg-[#15803D] text-white">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-sm flex flex-col sm:flex-row justify-between items-center">
+                    <div>© {{ date('Y') }} Gedung Serba Guna Aulia</div>
+                    <div class="flex gap-4 mt-2 sm:mt-0">
+                        <a href="{{ route('login') }}" class="hover:underline">Masuk</a>
+                        <a href="{{ route('home') }}#kontak" class="hover:underline">Kontak</a>
+                        <a href="{{ route('home') }}#kalender" class="hover:underline">Pesan Gedung</a>
+                    </div>
+                </div>
+            </footer>
         </div>
     </body>
 </html>

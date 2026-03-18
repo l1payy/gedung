@@ -22,13 +22,10 @@ Route::get('/', function () {
     $start = $current->copy()->startOfMonth()->toDateString();
     $end = $current->copy()->endOfMonth()->toDateString();
 
-    $bookings = \App\Models\Booking::whereBetween('tanggal', [$start, $end])
-        ->get()
-        ->groupBy(function ($b) {
-            return ($b->tanggal instanceof \Carbon\Carbon)
-                ? $b->tanggal->toDateString()
-                : \Carbon\Carbon::parse($b->tanggal)->toDateString();
-        });
+    $rows = \App\Models\Booking::where(function($q) use ($start, $end) {
+            $q->whereDate('tanggal', '<=', $end)
+              ->whereDate('tanggal_selesai', '>=', $start);
+        })->get();
 
     $prev = $current->copy()->subMonth();
     $next = $current->copy()->addMonth();
@@ -36,7 +33,7 @@ Route::get('/', function () {
     $allowNext = $next->lte($max);
 
     return view('home', [
-        'bookings' => $bookings,
+        'rows' => $rows,
         'currentMonth' => $current,
         'minMonth' => $min,
         'maxMonth' => $max,

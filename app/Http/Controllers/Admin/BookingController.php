@@ -43,7 +43,7 @@ class BookingController extends Controller
         ]);
 
         // Double-check overlap before approving
-        $overlap = Booking::overlap($booking->tanggal, $booking->waktu_mulai, $booking->waktu_selesai)
+        $overlap = Booking::overlap($booking->tanggal)
             ->where('id', '!=', $booking->id)
             ->exists();
         if ($overlap) {
@@ -88,17 +88,17 @@ class BookingController extends Controller
 
         $callback = function () use ($rows) {
             $out = fopen('php://output', 'w');
-            fputcsv($out, ['Nama Pemesan', 'Email', 'Nama Acara', 'Tanggal', 'Mulai', 'Selesai', 'Tamu', 'Status']);
+            fputcsv($out, ['Nama Pemesan', 'Email', 'Nama Acara', 'Tanggal', 'Durasi', 'Harga/Hari', 'Tamu', 'Status']);
             foreach ($rows as $b) {
                 fputcsv($out, [
                     $b->user->name,
                     $b->user->email,
                     $b->nama_acara,
                     $b->tanggal,
-                    \Carbon\Carbon::parse($b->waktu_mulai)->format('H:i'),
-                    \Carbon\Carbon::parse($b->waktu_selesai)->format('H:i'),
+                    '1 hari',
+                    $b->harga_per_hari,
                     $b->jumlah_tamu,
-                    $b->status,
+                    $b->status_label,
                 ]);
             }
             fclose($out);

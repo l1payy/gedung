@@ -1,9 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Pemesanan Saya</h2>
-            <a href="{{ route('bookings.create') }}" class="px-4 py-2 bg-primary text-white rounded hover:bg-green-700">Buat Pemesanan</a>
-        </div>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Pemesanan Saya</h2>
     </x-slot>
 
     <div class="py-8">
@@ -15,35 +12,38 @@
                             <thead>
                                 <tr class="text-left border-b">
                                     <th class="py-2 px-3">Nama Acara</th>
-                                    <th class="py-2 px-3">Tanggal</th>
-                                    <th class="py-2 px-3">Waktu</th>
-                                    <th class="py-2 px-3">Tamu</th>
+                                    <th class="py-2 px-3">Mulai</th>
+                                    <th class="py-2 px-3">Selesai</th>
+                                    <th class="py-2 px-3">Durasi</th>
+                                    <th class="py-2 px-3">Harga/Hari</th>
                                     <th class="py-2 px-3">Status</th>
                                     <th class="py-2 px-3">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($bookings as $b)
-                                    <tr class="border-b">
-                                        <td class="py-2 px-3">{{ $b->nama_acara }}</td>
+                                    @php
+                                        $durasi = \Carbon\Carbon::parse($b->tanggal)->diffInDays(\Carbon\Carbon::parse($b->tanggal_selesai)) + 1;
+                                        $statusColor = $b->status === 'approved' ? 'bg-green-100 text-green-700' : ($b->status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700');
+                                    @endphp
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2 px-3 font-medium">{{ $b->nama_acara }}</td>
                                         <td class="py-2 px-3">{{ \Carbon\Carbon::parse($b->tanggal)->isoFormat('DD MMM Y') }}</td>
-                                        <td class="py-2 px-3">{{ \Carbon\Carbon::parse($b->waktu_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($b->waktu_selesai)->format('H:i') }}</td>
-                                        <td class="py-2 px-3">{{ $b->jumlah_tamu }}</td>
-                                        <td class="py-2 px-3">
-                                            @php $color = $b->status === 'approved' ? 'bg-green-100 text-primary' : ($b->status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'); @endphp
-                                            <span class="px-2 py-1 rounded text-xs {{ $color }}">{{ ucfirst($b->status) }}</span>
-                                        </td>
-                                        <td class="py-2 px-3">
+                                        <td class="py-2 px-3">{{ \Carbon\Carbon::parse($b->tanggal_selesai)->isoFormat('DD MMM Y') }}</td>
+                                        <td class="py-2 px-3">{{ $durasi }} hari</td>
+                                        <td class="py-2 px-3">Rp {{ number_format($b->harga_per_hari,0,',','.') }}</td>
+                                        <td class="py-2 px-3"><span class="px-2 py-1 rounded text-xs {{ $statusColor }}">{{ $b->status_label }}</span></td>
+                                        <td class="py-2 px-3 space-x-2">
                                             <a href="{{ route('bookings.show', $b) }}" class="text-primary hover:underline">Detail</a>
                                             @if($b->status !== 'rejected')
-                                                <span class="mx-1">•</span>
+                                                <span>•</span>
                                                 <a href="{{ route('bookings.printable', $b) }}" class="text-gray-700 hover:underline">Cetak</a>
                                             @endif
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="py-4 text-center text-gray-500">Belum ada pemesanan.</td>
+                                        <td colspan="7" class="py-4 text-center text-gray-500">Belum ada pemesanan.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

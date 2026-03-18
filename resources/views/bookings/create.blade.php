@@ -24,21 +24,24 @@
                             <x-text-input name="nama_acara" type="text" class="mt-1 block w-full" value="{{ old('nama_acara') }}" required />
                             <x-input-error :messages="$errors->get('nama_acara')" class="mt-2" />
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                            <x-input-label value="Tanggal" />
-                            <x-text-input name="tanggal" type="date" class="mt-1 block w-full" value="{{ old('tanggal', $prefillDate ?? '') }}" required />
-                                <x-input-error :messages="$errors->get('tanggal')" class="mt-2" />
+                            <x-input-label value="Tanggal Mulai (maks 1 tahun ke depan)" />
+                            @php
+                                $min = \Carbon\Carbon::now()->toDateString();
+                                $max = \Carbon\Carbon::now()->addYear()->toDateString();
+                            @endphp
+                            <x-text-input name="tanggal" type="date" class="mt-1 block w-full"
+                                value="{{ old('tanggal', $prefillDate ?? '') }}"
+                                min="{{ $min }}" max="{{ $max }}" required />
+                            <x-input-error :messages="$errors->get('tanggal')" class="mt-2" />
                             </div>
                             <div>
-                                <x-input-label value="Waktu Mulai" />
-                                <x-text-input name="waktu_mulai" type="time" class="mt-1 block w-full" value="{{ old('waktu_mulai') }}" required />
-                                <x-input-error :messages="$errors->get('waktu_mulai')" class="mt-2" />
-                            </div>
-                            <div>
-                                <x-input-label value="Waktu Selesai" />
-                                <x-text-input name="waktu_selesai" type="time" class="mt-1 block w-full" value="{{ old('waktu_selesai') }}" required />
-                                <x-input-error :messages="$errors->get('waktu_selesai')" class="mt-2" />
+                                <x-input-label value="Tanggal Selesai" />
+                                <x-text-input name="tanggal_selesai" type="date" class="mt-1 block w-full"
+                                    value="{{ old('tanggal_selesai', $prefillDate ?? '') }}"
+                                    min="{{ $min }}" max="{{ $max }}" required />
+                                <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
                             </div>
                         </div>
                         <div>
@@ -46,6 +49,46 @@
                             <x-text-input name="jumlah_tamu" type="number" min="1" class="mt-1 block w-full" value="{{ old('jumlah_tamu') }}" required />
                             <x-input-error :messages="$errors->get('jumlah_tamu')" class="mt-2" />
                         </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <x-input-label value="Harga per Hari (Rp)" />
+                                <x-text-input type="number" class="mt-1 block w-full bg-gray-100"
+                                    value="{{ $venue->harga_per_hari ?? 0 }}" disabled />
+                            </div>
+                            <div class="sm:col-span-2">
+                                <x-input-label value="Nomor Rekening" />
+                                <x-text-input type="text" class="mt-1 block w-full bg-gray-100"
+                                    value="{{ $venue->bank_rekening ?? '' }}" disabled />
+                            </div>
+                        </div>
+                        <div>
+                            <x-input-label value="Nomor Admin" />
+                            <x-text-input type="text" class="mt-1 block w-full bg-gray-100"
+                                value="{{ $venue->admin_phone ?? '' }}" disabled />
+                        </div>
+                        <div class="rounded bg-green-50 text-green-800 text-sm p-3">
+                            <span id="calc-info">Total akan dihitung berdasarkan jumlah hari.</span>
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const start = document.querySelector('input[name="tanggal"]');
+                                const end = document.querySelector('input[name="tanggal_selesai"]');
+                                const info = document.getElementById('calc-info');
+                                const harga = {{ (int)($venue->harga_per_hari ?? 0) }};
+                                function update() {
+                                    if (!start.value || !end.value) return;
+                                    const s = new Date(start.value);
+                                    const e = new Date(end.value);
+                                    if (e < s) return;
+                                    const days = Math.round((e - s) / 86400000) + 1;
+                                    const total = days * harga;
+                                    info.textContent = `Durasi: ${days} hari • Per hari: Rp ${harga.toLocaleString('id-ID')} • Total: Rp ${total.toLocaleString('id-ID')}`;
+                                }
+                                start.addEventListener('change', update);
+                                end.addEventListener('change', update);
+                                update();
+                            });
+                        </script>
                         <div>
                             <x-input-label value="Deskripsi" />
                             <textarea name="deskripsi" class="mt-1 block w-full rounded border-gray-300">{{ old('deskripsi') }}</textarea>

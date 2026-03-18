@@ -13,9 +13,13 @@ class Booking extends Model
         'user_id',
         'nama_acara',
         'tanggal',
+        'tanggal_selesai',
         'waktu_mulai',
         'waktu_selesai',
         'jumlah_tamu',
+        'harga_per_hari',
+        'rekening',
+        'admin_phone',
         'deskripsi',
         'bukti_path',
         'status',
@@ -26,6 +30,7 @@ class Booking extends Model
     {
         return [
             'tanggal' => 'date',
+            'tanggal_selesai' => 'date',
             'waktu_mulai' => 'datetime:H:i',
             'waktu_selesai' => 'datetime:H:i',
         ];
@@ -36,15 +41,21 @@ class Booking extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function scopeOverlap($query, $tanggal, $mulai, $selesai)
+    public function scopeOverlap($query, $startDate, $endDate = null)
     {
-        return $query
-            ->whereDate('tanggal', $tanggal)
-            ->where(function ($q) {
-                $q->where('status', 'approved')
-                    ->orWhere('status', 'pending');
-            })
-            ->where('waktu_mulai', '<', $selesai)
-            ->where('waktu_selesai', '>', $mulai);
+        $end = $endDate ?? $startDate;
+        return $query->whereIn('status', ['approved', 'pending'])
+            ->whereDate('tanggal', '<=', $end)
+            ->whereDate('tanggal_selesai', '>=', $startDate);
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return match ($this->status) {
+            'approved' => 'Disetujui',
+            'pending' => 'Menunggu',
+            'rejected' => 'Ditolak',
+            default => $this->status,
+        };
     }
 }

@@ -1,81 +1,139 @@
 # Sistem Pemesanan Gedung Aulia
 
-Proyek Laravel + Breeze (Blade) untuk pemesanan satu gedung dengan validasi double-booking, upload bukti transfer, panel admin, laporan CSV/PDF, dan kalender ketersediaan yang responsif.
+Website pemesanan gedung yang menampilkan ketersediaan harian secara transparan, mendukung unggah bukti pembayaran, dan menyediakan panel admin untuk persetujuan serta laporan. Antarmuka responsif dengan fokus pada kemudahan pemesanan.
 
-## Fitur
-- Autentikasi (register, login, logout) dengan Breeze.
-- Role: user dan admin (seeder admin tersedia).
-- Pemesanan dengan field: nama_acara, tanggal, waktu_mulai, waktu_selesai, jumlah_tamu, deskripsi, upload bukti (jpg/png/pdf, maks 5MB).
-- Status pemesanan: pending, approved, rejected.
-- Validasi overlap waktu pada tanggal yang sama.
-- Admin: list, filter, lihat bukti, approve/reject (dengan catatan), export CSV/PDF laporan.
-- User: riwayat, detail, tampilan siap-cetak bukti reservasi.
-- Penyimpanan file di storage/app/public/bookings + storage:link.
-- Kalender ketersediaan: tampil jelas tanggal/slot terisi, navigasi 12 bulan ke depan, responsif.
+## Teknologi yang Digunakan
+- Backend: Laravel 12 (Blade)
+- Autentikasi: Laravel Breeze
+- Frontend: Tailwind CSS 3, Vite 7, Alpine.js (untuk navbar mobile)
+- PDF: barryvdh/laravel-dompdf
+- Utilitas Tanggal: Carbon
+- Database: MySQL (atau SQLite untuk pengembangan)
 
-## Requirements
-- PHP 8.2+
-- Composer
-- Node.js 18+
-- Database: MySQL atau SQLite
+## Arsitektur Singkat
+- Model inti: `User`, `Booking`, `Venue`
+- Kontroler user: `BookingController` (buat/lihat/cetak)
+- Panel admin: `Admin\BookingController` (daftar, filter, approve, reject, export CSV/PDF)
+- Middleware role: `RoleMiddleware` memastikan hanya `role=admin` yang mengakses rute admin
+- Tampilan utama: `home.blade.php` (hero + fitur + kalender ketersediaan)
+- Navigasi responsif: `layouts/navigation.blade.php`
 
-## Instalasi
+## Deskripsi Website
+- Hero/Welcome: Judul besar “Gedung Serba Guna Aulia” dengan tombol “Pesan Sekarang” dan “Lihat Alamat”
+- Section Fitur: poin singkat keunggulan gedung, tema hijau konsisten
+- Kalender Ketersediaan:
+  - Menandai tanggal dengan warna: tersedia, menunggu, disetujui
+  - Guest dapat klik “Buat Pemesanan” → diarahkan login terlebih dahulu
+  - Navigasi bulan: rentang hingga 12 bulan ke depan
+- Halaman Pemesanan:
+  - Form pemesanan: nama acara, tanggal mulai/selesai, jumlah tamu, deskripsi, unggah bukti (jpg/png/pdf, maks 5MB)
+  - Validasi bentrok (overlap) agar tidak terjadi double-booking
+- Panel Admin:
+  - Approve/Tolak dengan catatan
+  - Lihat/unduh bukti transfer
+  - Export CSV/PDF untuk laporan
+
+## Status Pemesanan (Label Indonesia)
+- Menunggu (pending)
+- Disetujui (approved)
+- Ditolak (rejected)
+
+## Persiapan & Instalasi
 1. Clone
    ```bash
    git clone https://github.com/<username>/<repo>.git
    cd <repo>
    ```
-2. Install dependencies
+2. Dependensi
    ```bash
    composer install
    npm install
    ```
-3. Salin environment
+3. Environment
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
-4. Konfigurasi database
-   - MySQL: set DB_CONNECTION=mysql, DB_DATABASE=gedung (atau nama lain), DB_USERNAME, DB_PASSWORD di `.env`, lalu buat database.
-   - SQLite: set DB_CONNECTION=sqlite dan buat `database/database.sqlite`.
-5. Migrasi & storage link
+4. Database
+   - MySQL: set `DB_CONNECTION=mysql`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
+   - SQLite: set `DB_CONNECTION=sqlite` dan buat `database/database.sqlite`
+5. Migrasi & Storage
    ```bash
    php artisan migrate
    php artisan storage:link
    ```
-6. Seed admin
+6. Seeder Admin
    ```bash
    php artisan db:seed --class=AdminUserSeeder
    ```
    - Admin: email `admin@aulia.test`, password `password123`
-7. Build assets
+7. Build/Dev
    ```bash
-   npm run build
+   npm run build      # produksi
+   npm run dev        # pengembangan (Vite)
+   php artisan serve  # jalankan server
    ```
-8. Jalankan server
-   ```bash
-   php artisan serve
-   ```
-   Akses http://127.0.0.1:8000
+
+## Konfigurasi Venue
+- Data harga, rekening, dan kontak admin berada di model `Venue` (lihat seeder `VenueSeeder`)
+- Ubah melalui seed atau lewat panel admin (bisa ditambahkan sesuai kebutuhan)
 
 ## Penggunaan
-- User biasa: register, lalu buat pemesanan via menu “Buat Pemesanan”.
-- Kalender: halaman Home; navigasi bulan pakai tombol Sebelumnya/Berikutnya (maks 12 bulan ke depan; bulan sebelum saat ini diblok).
-- Admin: masuk sebagai admin, kelola di `/admin/bookings` (approve/reject, unduh bukti, export).
-- Printable: tombol “Cetak Bukti Reservasi” di detail booking user.
+- User:
+  - Registrasi/login
+  - Buka Home → cek kalender → klik “Buat Pemesanan”
+  - Isi form dan unggah bukti transfer (opsional), status awal: Menunggu
+- Admin:
+  - Buka `/admin/bookings`
+  - Filter Menunggu/Disetujui/Ditolak
+  - Setujui/Tolak dengan catatan, unduh bukti, export laporan
+- Cetak:
+  - Di detail pemesanan user tersedia tombol “Cetak Bukti Reservasi”
 
 ## Laporan
-- CSV: `/admin/bookings/export/csv?start=YYYY-MM-DD&end=YYYY-MM-DD`
-- PDF: `/admin/bookings/export/pdf?start=YYYY-MM-DD&end=YYYY-MM-DD`
+- CSV:
+  ```
+  /admin/bookings/export/csv?start=YYYY-MM-DD&end=YYYY-MM-DD
+  ```
+- PDF:
+  ```
+  /admin/bookings/export/pdf?start=YYYY-MM-DD&end=YYYY-MM-DD
+  ```
 
 ## Testing
 ```bash
 php artisan test --filter=BookingOverlapTest
 ```
 
-## Catatan
-- Jangan commit `.env`, `vendor`, `public/build`, `storage` tertentu; sudah diset di `.gitignore`.
-- Pastikan `php artisan storage:link` setelah deploy agar link file publik aktif.
+## Keamanan & Validasi
+- Autentikasi terintegrasi (Breeze)
+- Middleware `role:admin` untuk rute admin
+- Validasi tanggal mulai/selesai dan cek bentrok (overlap)
+- Upload file hanya tipe `jpg, jpeg, png, pdf` dan ukuran terbatas
+
+## Roadmap (Opsional)
+- Notifikasi email saat disetujui/ditolak
+- Kalender jam (sekarang berbasis harian)
+- Panel pengelolaan venue dan tarif dinamis
+
+## Cara Menjelaskan ke Klien
+- Inti Nilai:
+  - Transparansi ketersediaan gedung secara langsung
+  - Proses pemesanan sederhana dan cepat
+  - Panel admin untuk kontrol penuh (setujui/tolak, bukti, laporan)
+  - Laporan operasional siap unduh (CSV/PDF)
+- Demo Singkat (±2 menit):
+  1. Tunjukkan halaman Home: hero, tombol “Pesan Sekarang”, kalender berwarna
+  2. Klik tanggal kosong → “Buat Pemesanan”, isi form singkat
+  3. Login sebagai admin → lihat daftar Menunggu, Setujui satu pesanan
+  4. Kembali ke kalender → tanggal berubah status “Disetujui”
+  5. Buka export PDF/CSV untuk periode acara
+- Bahasa yang Digunakan:
+  - Semua label status: Menunggu/Disetujui/Ditolak
+  - Navigasi dan tombol disederhanakan agar mudah dipahami tamu
+- Penyesuaian:
+  - Logo, warna hijau utama, alamat & peta sudah disesuaikan dengan lokasi gedung
+  - Section fitur singkat dan rapi untuk materi promosi
 
 ## Lisensi
 MIT

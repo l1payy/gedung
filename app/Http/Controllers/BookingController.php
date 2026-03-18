@@ -21,29 +21,30 @@ class BookingController extends Controller
     public function create()
     {
         $prefillDate = request()->query('tanggal');
-        return view('bookings.create', ['prefillDate' => $prefillDate]);
+        $venue = \App\Models\Venue::first();
+        return view('bookings.create', ['prefillDate' => $prefillDate, 'venue' => $venue]);
     }
 
     public function store(Request $request)
     {
+        $maxDate = now()->clone()->addYear()->toDateString();
+        $minDate = now()->toDateString();
         $data = $request->validate([
             'nama_acara' => ['required', 'string', 'max:255'],
-            'tanggal' => ['required', 'date'],
-            'waktu_mulai' => ['required', 'date_format:H:i'],
-            'waktu_selesai' => ['required', 'date_format:H:i', 'after:waktu_mulai'],
+            'tanggal' => ['required', 'date', "after_or_equal:$minDate", "before_or_equal:$maxDate"],
+            'tanggal_selesai' => ['required', 'date', 'after_or_equal:tanggal', "before_or_equal:$maxDate"],
             'jumlah_tamu' => ['required', 'integer', 'min:1'],
             'deskripsi' => ['nullable', 'string'],
             'bukti_transfer' => ['nullable', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf'],
         ]);
 
         $tanggal = $data['tanggal'];
-        $mulai = $data['waktu_mulai'];
-        $selesai = $data['waktu_selesai'];
+        $tanggalSelesai = $data['tanggal_selesai'];
 
-        $overlap = Booking::overlap($tanggal, $mulai, $selesai)->exists();
+        $overlap = Booking::overlap($tanggal, $tanggalSelesai)->exists();
         if ($overlap) {
             return back()
-                ->withErrors(['waktu_mulai' => 'Waktu sudah terisi'])
+                ->withErrors(['tanggal' => 'Rentang tanggal bentrok dengan pemesanan lain'])
                 ->withInput();
         }
 
@@ -52,13 +53,22 @@ class BookingController extends Controller
             $path = $request->file('bukti_transfer')->store('bookings', 'public');
         }
 
+        $venue = \App\Models\Venue::first();
+        $hargaPerHari = $venue?->harga_per_hari ?? 0;
+        $rekening = $venue?->bank_rekening ?? '';
+        $adminPhone = $venue?->admin_phone ?? '';
+
         Booking::create([
             'user_id' => Auth::id(),
             'nama_acara' => $data['nama_acara'],
             'tanggal' => $tanggal,
-            'waktu_mulai' => $mulai,
-            'waktu_selesai' => $selesai,
+            'tanggal_selesai' => $tanggalSelesai,
+            'waktu_mulai' => '00:00',
+            'waktu_selesai' => '23:59',
             'jumlah_tamu' => $data['jumlah_tamu'],
+            'harga_per_hari' => $hargaPerHari,
+            'rekening' => $rekening,
+            'admin_phone' => $adminPhone,
             'deskripsi' => $data['deskripsi'] ?? null,
             'bukti_path' => $path,
             'status' => 'pending',

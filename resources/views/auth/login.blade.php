@@ -2,7 +2,11 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <div class="mb-4 text-center">
+        <div class="mt-1 text-2xl font-bold text-gray-900">Login</div>
+        <p class="text-sm text-gray-600">Silakan masuk untuk memesan Gedung Aulia.</p>
+    </div>
+    <form method="POST" action="{{ route('login') }}" class="space-y-4">
         @csrf
 
         <!-- Email Address -->
@@ -31,15 +35,12 @@
                 <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
             </label>
         </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+        <div class="flex items-center justify-between gap-5">
+                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md" href="{{ route('register') }}">
+                    {{ __('Belum Punya Akun? Daftar Disini') }}
                 </a>
-            @endif
 
-            <x-primary-button class="ms-3">
+            <x-primary-button class="bg-primary hover:bg-green-700">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>

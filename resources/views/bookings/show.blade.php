@@ -9,9 +9,12 @@
                 <div class="p-6 space-y-3">
                     <div><span class="text-gray-500">Nama Acara:</span> <span class="font-medium">{{ $booking->nama_acara }}</span></div>
                     <div><span class="text-gray-500">Tanggal:</span> <span class="font-medium">{{ \Carbon\Carbon::parse($booking->tanggal)->isoFormat('DD MMM Y') }}</span></div>
-                    <div><span class="text-gray-500">Waktu:</span> <span class="font-medium">{{ \Carbon\Carbon::parse($booking->waktu_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->waktu_selesai)->format('H:i') }}</span></div>
+                    <div><span class="text-gray-500">Durasi:</span> <span class="font-medium">1 hari</span></div>
                     <div><span class="text-gray-500">Jumlah Tamu:</span> <span class="font-medium">{{ $booking->jumlah_tamu }}</span></div>
-                    <div><span class="text-gray-500">Status:</span> <span class="font-medium">{{ ucfirst($booking->status) }}</span></div>
+                    <div><span class="text-gray-500">Harga per Hari:</span> <span class="font-medium">Rp {{ number_format($booking->harga_per_hari, 0, ',', '.') }}</span></div>
+                    <div><span class="text-gray-500">Nomor Rekening:</span> <span class="font-medium">{{ $booking->rekening }}</span></div>
+                    <div><span class="text-gray-500">Nomor Admin:</span> <span class="font-medium">{{ $booking->admin_phone }}</span></div>
+                    <div><span class="text-gray-500">Status:</span> <span class="font-medium">{{ $booking->status_label }}</span></div>
                     @if($booking->deskripsi)
                         <div><span class="text-gray-500">Deskripsi:</span> <span class="font-medium">{{ $booking->deskripsi }}</span></div>
                     @endif

@@ -21,8 +21,8 @@
                 <th>Email</th>
                 <th>Nama Acara</th>
                 <th>Tanggal</th>
-                <th>Mulai</th>
-                <th>Selesai</th>
+                <th>Durasi</th>
+                <th>Harga/Hari</th>
                 <th>Tamu</th>
                 <th>Status</th>
             </tr>
@@ -34,10 +34,10 @@
                     <td>{{ $b->user->email }}</td>
                     <td>{{ $b->nama_acara }}</td>
                     <td>{{ \Carbon\Carbon::parse($b->tanggal)->isoFormat('DD MMM Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($b->waktu_mulai)->format('H:i') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($b->waktu_selesai)->format('H:i') }}</td>
+                    <td>1 hari</td>
+                    <td>{{ number_format($b->harga_per_hari, 0, ',', '.') }}</td>
                     <td>{{ $b->jumlah_tamu }}</td>
-                    <td>{{ ucfirst($b->status) }}</td>
+                    <td>{{ $b->status_label }}</td>
                 </tr>
             @endforeach
         </tbody>

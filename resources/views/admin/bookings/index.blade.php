@@ -4,9 +4,9 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Admin: Daftar Pemesanan</h2>
             <div class="space-x-2">
                 <a href="{{ route('admin.bookings.index') }}" class="px-3 py-1 rounded border {{ !$status ? 'bg-primary text-white' : '' }}">Semua</a>
-                <a href="{{ route('admin.bookings.index', ['status' => 'pending']) }}" class="px-3 py-1 rounded border {{ $status === 'pending' ? 'bg-primary text-white' : '' }}">Pending</a>
-                <a href="{{ route('admin.bookings.index', ['status' => 'approved']) }}" class="px-3 py-1 rounded border {{ $status === 'approved' ? 'bg-primary text-white' : '' }}">Approved</a>
-                <a href="{{ route('admin.bookings.index', ['status' => 'rejected']) }}" class="px-3 py-1 rounded border {{ $status === 'rejected' ? 'bg-primary text-white' : '' }}">Rejected</a>
+                <a href="{{ route('admin.bookings.index', ['status' => 'pending']) }}" class="px-3 py-1 rounded border {{ $status === 'pending' ? 'bg-primary text-white' : '' }}">Menunggu</a>
+                <a href="{{ route('admin.bookings.index', ['status' => 'approved']) }}" class="px-3 py-1 rounded border {{ $status === 'approved' ? 'bg-primary text-white' : '' }}">Disetujui</a>
+                <a href="{{ route('admin.bookings.index', ['status' => 'rejected']) }}" class="px-3 py-1 rounded border {{ $status === 'rejected' ? 'bg-primary text-white' : '' }}">Ditolak</a>
             </div>
         </div>
     </x-slot>
@@ -22,7 +22,8 @@
                                     <th class="py-2 px-3">Pemesan</th>
                                     <th class="py-2 px-3">Nama Acara</th>
                                     <th class="py-2 px-3">Tanggal</th>
-                                    <th class="py-2 px-3">Waktu</th>
+                                    <th class="py-2 px-3">Durasi</th>
+                                    <th class="py-2 px-3">Harga/Hari</th>
                                     <th class="py-2 px-3">Status</th>
                                     <th class="py-2 px-3">Aksi</th>
                                 </tr>
@@ -33,8 +34,9 @@
                                         <td class="py-2 px-3">{{ $b->user->name }}</td>
                                         <td class="py-2 px-3">{{ $b->nama_acara }}</td>
                                         <td class="py-2 px-3">{{ \Carbon\Carbon::parse($b->tanggal)->isoFormat('DD MMM Y') }}</td>
-                                        <td class="py-2 px-3">{{ \Carbon\Carbon::parse($b->waktu_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($b->waktu_selesai)->format('H:i') }}</td>
-                                        <td class="py-2 px-3">{{ ucfirst($b->status) }}</td>
+                                        <td class="py-2 px-3">1 hari</td>
+                                        <td class="py-2 px-3">Rp {{ number_format($b->harga_per_hari, 0, ',', '.') }}</td>
+                                        <td class="py-2 px-3">{{ $b->status_label }}</td>
                                         <td class="py-2 px-3 space-x-2">
                                             <a href="{{ route('admin.bookings.show', $b) }}" class="text-primary hover:underline">Detail</a>
                                             @if($b->bukti_path)
