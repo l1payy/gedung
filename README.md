@@ -39,6 +39,14 @@ Website pemesanan gedung yang menampilkan ketersediaan harian secara transparan,
 - Ditolak (rejected)
 
 ## Persiapan & Instalasi
+
+install tools yg dibutuhkan
+- vscode
+- laragon/xampp
+- composer
+- node js
+- git
+
 1. Clone
    ```bash
    git clone https://github.com/<username>/<repo>.git
