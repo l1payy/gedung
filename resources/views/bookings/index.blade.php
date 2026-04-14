@@ -14,8 +14,8 @@
                                     <th class="py-2 px-3">Nama Acara</th>
                                     <th class="py-2 px-3">Mulai</th>
                                     <th class="py-2 px-3">Selesai</th>
-                                    <th class="py-2 px-3">Durasi</th>
-                                    <th class="py-2 px-3">Harga/Hari</th>
+                                    <th class="py-2 px-3">Dipesan selama</th>
+                                    <th class="py-2 px-3">Total harga yang dibayar</th>
                                     <th class="py-2 px-3">Status</th>
                                     <th class="py-2 px-3">Aksi</th>
                                 </tr>
@@ -31,7 +31,7 @@
                                         <td class="py-2 px-3">{{ \Carbon\Carbon::parse($b->tanggal)->isoFormat('DD MMM Y') }}</td>
                                         <td class="py-2 px-3">{{ \Carbon\Carbon::parse($b->tanggal_selesai)->isoFormat('DD MMM Y') }}</td>
                                         <td class="py-2 px-3">{{ $durasi }} hari</td>
-                                        <td class="py-2 px-3">Rp {{ number_format($b->harga_per_hari,0,',','.') }}</td>
+                                        <td class="py-2 px-3 font-medium">Rp {{ number_format($b->harga_per_hari * $durasi, 0, ',', '.') }}</td>
                                         <td class="py-2 px-3"><span class="px-2 py-1 rounded text-xs {{ $statusColor }}">{{ $b->status_label }}</span></td>
                                         <td class="py-2 px-3 space-x-2">
                                             <a href="{{ route('bookings.show', $b) }}" class="text-primary hover:underline">Detail</a>

@@ -17,29 +17,34 @@
     <table>
         <thead>
             <tr>
-                <th>Pemesan</th>
-                <th>Email</th>
-                <th>Nama Acara</th>
-                <th>Tanggal</th>
-                <th>Durasi</th>
-                <th>Harga/Hari</th>
-                <th>Tamu</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($rows as $b)
-                <tr>
-                    <td>{{ $b->user->name }}</td>
-                    <td>{{ $b->user->email }}</td>
-                    <td>{{ $b->nama_acara }}</td>
-                    <td>{{ \Carbon\Carbon::parse($b->tanggal)->isoFormat('DD MMM Y') }}</td>
-                    <td>1 hari</td>
-                    <td>{{ number_format($b->harga_per_hari, 0, ',', '.') }}</td>
-                    <td>{{ $b->jumlah_tamu }}</td>
-                    <td>{{ $b->status_label }}</td>
+                    <th>Pemesan</th>
+                    <th>Email</th>
+                    <th>Nama Acara</th>
+                    <th>Tanggal</th>
+                    <th>Dipesan selama</th>
+                    <th>Total harga yang dibayar</th>
+                    <th>Tamu</th>
+                    <th>Status</th>
                 </tr>
-            @endforeach
+            </thead>
+            <tbody>
+                @foreach($rows as $b)
+                    @php
+                        $s = \Carbon\Carbon::parse($b->tanggal);
+                        $e = \Carbon\Carbon::parse($b->tanggal_selesai);
+                        $days = $s->diffInDays($e) + 1;
+                    @endphp
+                    <tr>
+                        <td>{{ $b->user->name }}</td>
+                        <td>{{ $b->user->email }}</td>
+                        <td>{{ $b->nama_acara }}</td>
+                        <td>{{ $s->isoFormat('DD MMM Y') }}</td>
+                        <td>{{ $days }} hari</td>
+                        <td>{{ number_format($b->harga_per_hari * $days, 0, ',', '.') }}</td>
+                        <td>{{ $b->jumlah_tamu }}</td>
+                        <td>{{ $b->status_label }}</td>
+                    </tr>
+                @endforeach
         </tbody>
     </table>
 </body>

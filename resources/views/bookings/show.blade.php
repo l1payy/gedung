@@ -8,10 +8,27 @@
             <div class="bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 space-y-3">
                     <div><span class="text-gray-500">Nama Acara:</span> <span class="font-medium">{{ $booking->nama_acara }}</span></div>
-                    <div><span class="text-gray-500">Tanggal:</span> <span class="font-medium">{{ \Carbon\Carbon::parse($booking->tanggal)->isoFormat('DD MMM Y') }}</span></div>
-                    <div><span class="text-gray-500">Durasi:</span> <span class="font-medium">1 hari</span></div>
+                    <div><span class="text-gray-500">Tanggal:</span>
+                        <span class="font-medium">
+                            @if($booking->tanggal->equalTo($booking->tanggal_selesai))
+                                {{ $booking->tanggal->isoFormat('DD MMM Y') }}
+                            @else
+                                {{ $booking->tanggal->isoFormat('DD MMM Y') }} - {{ $booking->tanggal_selesai->isoFormat('DD MMM Y') }}
+                            @endif
+                        </span>
+                    </div>
+                    <div><span class="text-gray-500">Dipesan selama:</span>
+                        <span class="font-medium">
+                            @php
+                                $s = \Carbon\Carbon::parse($booking->tanggal);
+                                $e = \Carbon\Carbon::parse($booking->tanggal_selesai);
+                                $days = $s->diffInDays($e) + 1;
+                            @endphp
+                            {{ $days }} hari
+                        </span>
+                    </div>
                     <div><span class="text-gray-500">Jumlah Tamu:</span> <span class="font-medium">{{ $booking->jumlah_tamu }}</span></div>
-                    <div><span class="text-gray-500">Harga per Hari:</span> <span class="font-medium">Rp {{ number_format($booking->harga_per_hari, 0, ',', '.') }}</span></div>
+                    <div><span class="text-gray-500">Total harga yang dibayar:</span> <span class="font-medium">Rp {{ number_format($booking->harga_per_hari * $days, 0, ',', '.') }}</span></div>
                     <div><span class="text-gray-500">Nomor Rekening:</span> <span class="font-medium">{{ $booking->rekening }}</span></div>
                     <div><span class="text-gray-500">Nomor Admin:</span> <span class="font-medium">{{ $booking->admin_phone }}</span></div>
                     <div><span class="text-gray-500">Status:</span> <span class="font-medium">{{ $booking->status_label }}</span></div>

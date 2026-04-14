@@ -22,8 +22,8 @@
                                     <th class="py-2 px-3">Pemesan</th>
                                     <th class="py-2 px-3">Nama Acara</th>
                                     <th class="py-2 px-3">Tanggal</th>
-                                    <th class="py-2 px-3">Durasi</th>
-                                    <th class="py-2 px-3">Harga/Hari</th>
+                                    <th class="py-2 px-3">Dipesan selama</th>
+                                    <th class="py-2 px-3">Total harga yang dibayar</th>
                                     <th class="py-2 px-3">Status</th>
                                     <th class="py-2 px-3">Aksi</th>
                                 </tr>
@@ -33,9 +33,16 @@
                                     <tr class="border-b">
                                         <td class="py-2 px-3">{{ $b->user->name }}</td>
                                         <td class="py-2 px-3">{{ $b->nama_acara }}</td>
-                                        <td class="py-2 px-3">{{ \Carbon\Carbon::parse($b->tanggal)->isoFormat('DD MMM Y') }}</td>
-                                        <td class="py-2 px-3">1 hari</td>
-                                        <td class="py-2 px-3">Rp {{ number_format($b->harga_per_hari, 0, ',', '.') }}</td>
+                                        <td class="py-2 px-3">
+                                            @php
+                                                $s = \Carbon\Carbon::parse($b->tanggal);
+                                                $e = \Carbon\Carbon::parse($b->tanggal_selesai);
+                                                $days = $s->diffInDays($e) + 1;
+                                            @endphp
+                                            {{ $s->isoFormat('DD MMM Y') }}
+                                        </td>
+                                        <td class="py-2 px-3">{{ $days }} hari</td>
+                                        <td class="py-2 px-3 font-medium">Rp {{ number_format($b->harga_per_hari * $days, 0, ',', '.') }}</td>
                                         <td class="py-2 px-3">{{ $b->status_label }}</td>
                                         <td class="py-2 px-3 space-x-2">
                                             <a href="{{ route('admin.bookings.show', $b) }}" class="text-primary hover:underline">Detail</a>

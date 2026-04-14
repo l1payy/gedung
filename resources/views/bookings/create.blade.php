@@ -51,9 +51,9 @@
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
-                                <x-input-label value="Harga per Hari (Rp)" />
-                                <x-text-input type="number" class="mt-1 block w-full bg-gray-100"
-                                    value="{{ $venue->harga_per_hari ?? 0 }}" disabled />
+                                <x-input-label value="Total harga yang dibayar (Rp)" />
+                                <x-text-input id="total-harga-display" type="text" class="mt-1 block w-full bg-gray-100"
+                                    value="{{ number_format($venue->harga_per_hari ?? 0, 0, ',', '.') }}" disabled />
                             </div>
                             <div class="sm:col-span-2">
                                 <x-input-label value="Nomor Rekening" />
@@ -74,6 +74,7 @@
                                 const start = document.querySelector('input[name="tanggal"]');
                                 const end = document.querySelector('input[name="tanggal_selesai"]');
                                 const info = document.getElementById('calc-info');
+                                const totalDisplay = document.getElementById('total-harga-display');
                                 const harga = {{ (int)($venue->harga_per_hari ?? 0) }};
                                 function update() {
                                     if (!start.value || !end.value) return;
@@ -82,7 +83,8 @@
                                     if (e < s) return;
                                     const days = Math.round((e - s) / 86400000) + 1;
                                     const total = days * harga;
-                                    info.textContent = `Durasi: ${days} hari • Per hari: Rp ${harga.toLocaleString('id-ID')} • Total: Rp ${total.toLocaleString('id-ID')}`;
+                                    info.textContent = `Dipesan selama: ${days} hari • Per hari: Rp ${harga.toLocaleString('id-ID')} • Total: Rp ${total.toLocaleString('id-ID')}`;
+                                    totalDisplay.value = total.toLocaleString('id-ID');
                                 }
                                 start.addEventListener('change', update);
                                 end.addEventListener('change', update);

@@ -12,7 +12,7 @@ class VenueSeeder extends Seeder
         Venue::updateOrCreate(
             ['nama' => 'Gedung Aulia'],
             [
-                'harga_per_hari' => 250000,
+                'harga_per_hari' => 2000000,
                 'bank_rekening' => 'BCA 1234567890 a/n Gedung Aulia',
                 'admin_phone' => '0812-3456-7890',
             ]

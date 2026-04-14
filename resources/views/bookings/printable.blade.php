@@ -32,10 +32,9 @@
             <div><span class="text-gray-500">Nama Acara:</span> <span class="font-medium">{{ $booking->nama_acara }}</span></div>
             <div><span class="text-gray-500">Tanggal Mulai:</span> <span class="font-medium">{{ \Carbon\Carbon::parse($booking->tanggal)->isoFormat('DD MMM Y') }}</span></div>
             <div><span class="text-gray-500">Tanggal Selesai:</span> <span class="font-medium">{{ \Carbon\Carbon::parse($booking->tanggal_selesai)->isoFormat('DD MMM Y') }}</span></div>
-            <div><span class="text-gray-500">Durasi:</span> <span class="font-medium">{{ \Carbon\Carbon::parse($booking->tanggal)->diffInDays(\Carbon\Carbon::parse($booking->tanggal_selesai))+1 }} hari</span></div>
+            <div><span class="text-gray-500">Dipesan selama:</span> <span class="font-medium">{{ \Carbon\Carbon::parse($booking->tanggal)->diffInDays(\Carbon\Carbon::parse($booking->tanggal_selesai))+1 }} hari</span></div>
             <div><span class="text-gray-500">Jumlah Tamu:</span> <span class="font-medium">{{ $booking->jumlah_tamu }}</span></div>
-            <div><span class="text-gray-500">Harga per Hari:</span> <span class="font-medium">Rp {{ number_format($booking->harga_per_hari, 0, ',', '.') }}</span></div>
-            <div><span class="text-gray-500">Total Harga:</span> <span class="font-medium">
+            <div><span class="text-gray-500">Total harga yang dibayar:</span> <span class="font-medium">
                 @php $days = \Carbon\Carbon::parse($booking->tanggal)->diffInDays(\Carbon\Carbon::parse($booking->tanggal_selesai))+1; @endphp
                 Rp {{ number_format($booking->harga_per_hari * $days, 0, ',', '.') }}
             </span></div>
