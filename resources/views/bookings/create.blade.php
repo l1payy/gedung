@@ -61,6 +61,8 @@
                                     value="{{ $venue->bank_rekening ?? '' }}" disabled />
                             </div>
                         </div>
+                        <div class="w-full p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">Silahkan Transfer ke Nomor Rekening diatas dan upload bukti ss di Bukti Transfer
+                        </div>
                         <div>
                             <x-input-label value="Nomor Admin" />
                             <x-text-input type="text" class="mt-1 block w-full bg-gray-100"
