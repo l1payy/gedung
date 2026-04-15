@@ -12,6 +12,7 @@
                             <thead>
                                 <tr class="text-left border-b">
                                     <th class="py-2 px-3">Nama Acara</th>
+                                    <th class="py-2 px-3">Kategori</th>
                                     <th class="py-2 px-3">Mulai</th>
                                     <th class="py-2 px-3">Selesai</th>
                                     <th class="py-2 px-3">Dipesan selama</th>
@@ -28,6 +29,7 @@
                                     @endphp
                                     <tr class="border-b hover:bg-gray-50">
                                         <td class="py-2 px-3 font-medium">{{ $b->nama_acara }}</td>
+                                        <td class="py-2 px-3">{{ $b->kategori_acara }}</td>
                                         <td class="py-2 px-3">{{ \Carbon\Carbon::parse($b->tanggal)->isoFormat('DD MMM Y') }}</td>
                                         <td class="py-2 px-3">{{ \Carbon\Carbon::parse($b->tanggal_selesai)->isoFormat('DD MMM Y') }}</td>
                                         <td class="py-2 px-3">{{ $durasi }} hari</td>

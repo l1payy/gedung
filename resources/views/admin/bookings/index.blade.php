@@ -21,6 +21,7 @@
                                 <tr class="text-left border-b">
                                     <th class="py-2 px-3">Pemesan</th>
                                     <th class="py-2 px-3">Nama Acara</th>
+                                    <th class="py-2 px-3">Kategori</th>
                                     <th class="py-2 px-3">Tanggal</th>
                                     <th class="py-2 px-3">Dipesan selama</th>
                                     <th class="py-2 px-3">Total harga yang dibayar</th>
@@ -33,6 +34,7 @@
                                     <tr class="border-b">
                                         <td class="py-2 px-3">{{ $b->user->name }}</td>
                                         <td class="py-2 px-3">{{ $b->nama_acara }}</td>
+                                        <td class="py-2 px-3">{{ $b->kategori_acara }}</td>
                                         <td class="py-2 px-3">
                                             @php
                                                 $s = \Carbon\Carbon::parse($b->tanggal);

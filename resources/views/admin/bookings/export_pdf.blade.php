@@ -20,6 +20,7 @@
                     <th>Pemesan</th>
                     <th>Email</th>
                     <th>Nama Acara</th>
+                    <th>Kategori</th>
                     <th>Tanggal</th>
                     <th>Dipesan selama</th>
                     <th>Total harga yang dibayar</th>
@@ -35,10 +36,11 @@
                         $days = $s->diffInDays($e) + 1;
                     @endphp
                     <tr>
-                        <td>{{ $b->user->name }}</td>
-                        <td>{{ $b->user->email }}</td>
-                        <td>{{ $b->nama_acara }}</td>
-                        <td>{{ $s->isoFormat('DD MMM Y') }}</td>
+                         <td>{{ $b->user->name }}</td>
+                         <td>{{ $b->user->email }}</td>
+                         <td>{{ $b->nama_acara }}</td>
+                         <td>{{ $b->kategori_acara }}</td>
+                         <td>{{ $s->isoFormat('DD MMM Y') }}</td>
                         <td>{{ $days }} hari</td>
                         <td>{{ number_format($b->harga_per_hari * $days, 0, ',', '.') }}</td>
                         <td>{{ $b->jumlah_tamu }}</td>

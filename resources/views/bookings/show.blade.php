@@ -8,6 +8,7 @@
             <div class="bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 space-y-3">
                     <div><span class="text-gray-500">Nama Acara:</span> <span class="font-medium">{{ $booking->nama_acara }}</span></div>
+                    <div><span class="text-gray-500">Kategori Acara:</span> <span class="font-medium">{{ $booking->kategori_acara }}</span></div>
                     <div><span class="text-gray-500">Tanggal:</span>
                         <span class="font-medium">
                             @if($booking->tanggal->equalTo($booking->tanggal_selesai))

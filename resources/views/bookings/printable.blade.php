@@ -30,6 +30,7 @@
             </div>
             <hr>
             <div><span class="text-gray-500">Nama Acara:</span> <span class="font-medium">{{ $booking->nama_acara }}</span></div>
+            <div><span class="text-gray-500">Kategori Acara:</span> <span class="font-medium">{{ $booking->kategori_acara }}</span></div>
             <div><span class="text-gray-500">Tanggal Mulai:</span> <span class="font-medium">{{ \Carbon\Carbon::parse($booking->tanggal)->isoFormat('DD MMM Y') }}</span></div>
             <div><span class="text-gray-500">Tanggal Selesai:</span> <span class="font-medium">{{ \Carbon\Carbon::parse($booking->tanggal_selesai)->isoFormat('DD MMM Y') }}</span></div>
             <div><span class="text-gray-500">Dipesan selama:</span> <span class="font-medium">{{ \Carbon\Carbon::parse($booking->tanggal)->diffInDays(\Carbon\Carbon::parse($booking->tanggal_selesai))+1 }} hari</span></div>

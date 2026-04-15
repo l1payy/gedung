@@ -24,6 +24,16 @@
                             <x-text-input name="nama_acara" type="text" class="mt-1 block w-full" value="{{ old('nama_acara') }}" required />
                             <x-input-error :messages="$errors->get('nama_acara')" class="mt-2" />
                         </div>
+                        <div>
+                            <x-input-label value="Kategori Acara" />
+                            <select name="kategori_acara" id="kategori_acara" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                                <option value="" disabled selected>Pilih Kategori</option>
+                                <option value="Wisuda" data-harga="{{ $venue->harga_wisuda ?? 1500000 }}" {{ old('kategori_acara') == 'Wisuda' ? 'selected' : '' }}>Wisuda (Rp {{ number_format($venue->harga_wisuda ?? 1500000, 0, ',', '.') }}/hari)</option>
+                                <option value="Nikah" data-harga="{{ $venue->harga_nikah ?? 6500000 }}" {{ old('kategori_acara') == 'Nikah' ? 'selected' : '' }}>Nikah (Rp {{ number_format($venue->harga_nikah ?? 6500000, 0, ',', '.') }}/hari)</option>
+                                <option value="Seminar" data-harga="{{ $venue->harga_seminar ?? 2000000 }}" {{ old('kategori_acara') == 'Seminar' ? 'selected' : '' }}>Seminar (Rp {{ number_format($venue->harga_seminar ?? 2000000, 0, ',', '.') }}/hari)</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('kategori_acara')" class="mt-2" />
+                        </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                             <x-input-label value="Tanggal Mulai (maks 1 tahun ke depan)" />
@@ -51,15 +61,17 @@
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
-                                <x-input-label value="Total harga yang dibayar (Rp)" />
+                                <x-input-label value="Harga perhari (sesuai kategori)" />
                                 <x-text-input id="total-harga-display" type="text" class="mt-1 block w-full bg-gray-100"
-                                    value="{{ number_format($venue->harga_per_hari ?? 0, 0, ',', '.') }}" disabled />
+                                    value="0" disabled />
                             </div>
                             <div class="sm:col-span-2">
                                 <x-input-label value="Nomor Rekening" />
                                 <x-text-input type="text" class="mt-1 block w-full bg-gray-100"
                                     value="{{ $venue->bank_rekening ?? '' }}" disabled />
                             </div>
+                        </div>
+                        <div class="w-full p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">Silahkan Transfer ke Nomor Rekening diatas dan upload bukti ss di Bukti Transfer
                         </div>
                         <div>
                             <x-input-label value="Nomor Admin" />
@@ -73,11 +85,16 @@
                             document.addEventListener('DOMContentLoaded', () => {
                                 const start = document.querySelector('input[name="tanggal"]');
                                 const end = document.querySelector('input[name="tanggal_selesai"]');
+                                const kategori = document.getElementById('kategori_acara');
                                 const info = document.getElementById('calc-info');
                                 const totalDisplay = document.getElementById('total-harga-display');
-                                const harga = {{ (int)($venue->harga_per_hari ?? 0) }};
+                                
                                 function update() {
-                                    if (!start.value || !end.value) return;
+                                    if (!start.value || !end.value || !kategori.value) return;
+                                    
+                                    const selectedOption = kategori.options[kategori.selectedIndex];
+                                    const harga = parseInt(selectedOption.getAttribute('data-harga')) || 0;
+                                    
                                     const s = new Date(start.value);
                                     const e = new Date(end.value);
                                     if (e < s) return;
@@ -88,6 +105,7 @@
                                 }
                                 start.addEventListener('change', update);
                                 end.addEventListener('change', update);
+                                kategori.addEventListener('change', update);
                                 update();
                             });
                         </script>

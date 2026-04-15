@@ -88,7 +88,7 @@ class BookingController extends Controller
 
         $callback = function () use ($rows) {
             $out = fopen('php://output', 'w');
-            fputcsv($out, ['Nama Pemesan', 'Email', 'Nama Acara', 'Tanggal', 'Dipesan selama', 'Total harga yang dibayar', 'Tamu', 'Status']);
+            fputcsv($out, ['Nama Pemesan', 'Email', 'Nama Acara', 'Kategori', 'Tanggal', 'Dipesan selama', 'Total harga yang dibayar', 'Tamu', 'Status']);
             foreach ($rows as $b) {
                 $s = \Carbon\Carbon::parse($b->tanggal);
                 $e = \Carbon\Carbon::parse($b->tanggal_selesai);
@@ -97,6 +97,7 @@ class BookingController extends Controller
                     $b->user->name,
                     $b->user->email,
                     $b->nama_acara,
+                    $b->kategori_acara,
                     $b->tanggal,
                     $days . ' hari',
                     $b->harga_per_hari * $days,

@@ -12,6 +12,9 @@ class Venue extends Model
     protected $fillable = [
         'nama',
         'harga_per_hari',
+        'harga_wisuda',
+        'harga_nikah',
+        'harga_seminar',
         'bank_rekening',
         'admin_phone',
     ];

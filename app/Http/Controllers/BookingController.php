@@ -31,6 +31,7 @@ class BookingController extends Controller
         $minDate = now()->toDateString();
         $data = $request->validate([
             'nama_acara' => ['required', 'string', 'max:255'],
+            'kategori_acara' => ['required', 'string', 'in:Wisuda,Nikah,Seminar'],
             'tanggal' => ['required', 'date', "after_or_equal:$minDate", "before_or_equal:$maxDate"],
             'tanggal_selesai' => ['required', 'date', 'after_or_equal:tanggal', "before_or_equal:$maxDate"],
             'jumlah_tamu' => ['required', 'integer', 'min:1'],
@@ -54,13 +55,22 @@ class BookingController extends Controller
         }
 
         $venue = \App\Models\Venue::first();
-        $hargaPerHari = $venue?->harga_per_hari ?? 0;
+
+        // Tentukan harga berdasarkan kategori dari DB
+        $hargaPerHari = match ($data['kategori_acara']) {
+            'Wisuda' => $venue?->harga_wisuda ?? 1500000,
+            'Nikah' => $venue?->harga_nikah ?? 6500000,
+            'Seminar' => $venue?->harga_seminar ?? 2000000,
+            default => 0,
+        };
+
         $rekening = $venue?->bank_rekening ?? '';
         $adminPhone = $venue?->admin_phone ?? '';
 
         Booking::create([
             'user_id' => Auth::id(),
             'nama_acara' => $data['nama_acara'],
+            'kategori_acara' => $data['kategori_acara'],
             'tanggal' => $tanggal,
             'tanggal_selesai' => $tanggalSelesai,
             'waktu_mulai' => '00:00',
