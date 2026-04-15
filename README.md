@@ -73,6 +73,7 @@ install tools yg dibutuhkan
 6. Seeder Admin
    ```bash
    php artisan db:seed --class=AdminUserSeeder
+   php artisan db:seed --class=VenueSeeder    
    ```
    - Admin: email `admin@aulia.test`, password `password123`
 7. Build/Dev
